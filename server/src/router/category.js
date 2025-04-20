@@ -73,6 +73,8 @@ router.post("/add",async (req,res)=>{
         try{
             connection = await pool.getConnection();
             const sqll = `insert into category (name) values (?)`
+            const forval = uuidv4();
+            const arr = {forval, name}
             const [result] = await connection.query(sqll,name)
             return result.affectedRows > 0;
         }
