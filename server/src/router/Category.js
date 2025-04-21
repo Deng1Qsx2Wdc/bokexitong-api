@@ -29,6 +29,7 @@ router.post("/query", async (req, res) => {
                    where name = ?`
     const {err, cow} = await updatecategory(deletes, name)
     if (err == null) {
+        console.log(cow)
         res.send({
             code: 200,
             msg: "查找成功"
