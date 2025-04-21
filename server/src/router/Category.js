@@ -96,7 +96,7 @@ router.post("/add", async (req, res) => {//当客户端发送一个post请求到
 })
 module.exports = router
 
-//添加一个类型
+//添加个类型
 // router.post("/add",async (req,res)=>{
 //     const { name } = req.body;
 //     async function addcategory() {

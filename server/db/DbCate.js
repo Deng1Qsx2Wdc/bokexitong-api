@@ -10,7 +10,7 @@ const pool = mysql.createPool({//数据库连接池，能够复用数据库连�
     database : "demo1",
     port     : "3306"
 });
-//增删查改
+//增删查
 async function allcategory(sell,name)  {
     let connection;
     try{
