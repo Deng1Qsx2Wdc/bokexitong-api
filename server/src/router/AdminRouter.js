@@ -13,8 +13,8 @@ router.post("/login",async (req,res)=>{//当客户端发送一个post请求到/t
             password,
             login_token
         }
-    // let sqll ="admin = ? and password = ? and login_token = ?"
-        const cow =  await queryAdmin(arr)
+        let sell ="admin = ? and password = ? and login_token = ?"
+        const cow =  await queryAdmin(sell,arr)
         if(cow){
             return res.status(400).send({
                 code:400,

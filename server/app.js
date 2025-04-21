@@ -28,7 +28,7 @@ app.use(update.any())
 // const router = require("./src/router/AdminRouter")
 // app.use("/admin",router)//所有以/test开头的路由都会被testRoutes模块处理。
 
-const router1 = require("./src/router/category")
+const router1 = require("./src/router/Category")
 app.use("/admin",router1)//所有以/test开头的路由都会被testRoutes模块处理。
 //根路由
 app.get("/",(req,res)=>{

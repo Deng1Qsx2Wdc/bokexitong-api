@@ -10,44 +10,39 @@ const pool = mysql.createPool({//数据库连接池，能够复用数据库连�
     database : "demo1",
     port     : "3306"
 });
-
-async function queryAdmin(arr) {
+//增删查改
+async function allcategory(sell,name)  {
     let connection;
     try{
         connection = await pool.getConnection();
-        const sqll = "select * from admin where acount = ? and password = ? and token = ?"
-        const values = [arr.acount,arr.password,arr.login_token]
-        const [result] = await connection.query(sqll,values)
-        return result.length>0?1:0;
+        const [result] = await connection.query(sell,[name])//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
+        return result;
     }
     catch(err){
-        console.error("查询错误",err)
+        console.error("程序错误",err)
         throw err
     }finally{
         if(connection)
             connection.release()
     }
 }
-async function insertAdmin(arr) {
+//改
+async function updatecategory(sell,arr = []) {
     let connection;
     try{
         connection = await pool.getConnection();
-        const sqll = "insert into admin (acount,password,token) values (?,?,?)"
-        const values = [arr.acount,arr.password,arr.login_token]
-        const [result] = await connection.query(sqll,values)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
-        return result.affectedRows > 0;//是 MySQL 操作结果对象的一个属性，表示 受影响的数据库行数。
-                                        //对于 INSERT 操作，成功插入一条记录时，affectedRows 的值为 1；失败则为 0。
+        const [result] = await connection.query(sell,arr)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
+        return result;
     }
     catch(err){
-        console.error("注册错误",err)
+        console.error("程序错误",err)
         throw err
     }finally{
         if(connection)
             connection.release()
     }
 }
-
-module.exports = {queryAdmin,insertAdmin};//将pool和genid导出文件，可以在其他文件中使用
+module.exports = { allcategory,updatecategory };//将pool和genid导出文件，可以在其他文件中使用
 
 
 //const [result] = await connection.query("INSERT INTO users (name) VALUES ('John')");
