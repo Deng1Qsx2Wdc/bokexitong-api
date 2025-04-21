@@ -47,7 +47,7 @@ module.exports = { allcategory,updatecategory };//将pool和genid导出文件，
 
 //const [result] = await connection.query("INSERT INTO users (name) VALUES ('John')");
 //console.log(result);
-// 输出：
+// 输出
 // {
 //   fieldCount: 0,
 //   affectedRows: 1,  // 插入了一行
