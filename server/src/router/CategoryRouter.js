@@ -4,6 +4,7 @@ const router = express.Router();
 const {v4: uuidv4} = require("uuid")
 const mysql = require("mysql2/promise.js")//E:/GeRenBoKe/bookending-test/server/db/DbUtils
 const {allcategory, updatecategory} = require("../../db/DbCate")
+const Snowflake = require("snowflake-id");
 //修改一个类型
 router.post("/update", async (req, res) => {
     const {id, name} = req.body;
@@ -73,8 +74,11 @@ router.post("/add", async (req, res) => {//当客户端发送一个post请求到
                 msg: "类型已存在"
             })
         }
-        let adds = " insert into  category  (name) values (?)"
-        const {errs, col} = await allcategory(adds, name)
+        let adds = " insert into  category  (id,name) values (?,?)"
+        const ids = new Snowflake()
+        const id = ids.generate()
+        const arr =[id,name]
+        const {errs, col} = await allcategory(adds, arr)
         if (errs == null) {
             res.send({
                 code: 200,
