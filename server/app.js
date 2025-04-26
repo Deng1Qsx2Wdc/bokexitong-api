@@ -25,14 +25,14 @@ const update = multer({
 })
 app.use(update.any())
 
-// const router = require("./src/router/AdminRouter")
-// app.use("/admin",router)//所有以/test开头的路由都会被testRoutes模块处理。
+const admin = require("./src/router/AdminRouter")//账户
+app.use("/admin",admin)
 
-const router1 = require("./src/router/CategoryRouter")
-app.use("/admin",router1)//所有以/test开头的路由都会被testRoutes模块处理。
+const category = require("./src/router/CategoryRouter")//博客类型
+app.use("/category",category)
 //
-const  bokerouter = require("../server/src/router/blogRouter")
-app.use("/blog",bokerouter)
+const  blog = require("../server/src/router/blogRouter")//博客
+app.use("/blog",blog)
 
 //根路由
 app.get("/",(req,res)=>{

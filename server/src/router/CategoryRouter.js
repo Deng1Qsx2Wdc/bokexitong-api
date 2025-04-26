@@ -3,8 +3,7 @@ const express = require("express")
 const router = express.Router();
 const {v4: uuidv4} = require("uuid")
 const mysql = require("mysql2/promise.js")//E:/GeRenBoKe/bookending-test/server/db/DbUtils
-const {allcategory, updatecategory} = require("../../db/DbCate")
-const Snowflake = require("snowflake-id");
+const FlakeId = require("flake-idgen");
 //修改一个类型
 router.post("/update", async (req, res) => {
     const {id, name} = req.body;
@@ -22,7 +21,7 @@ router.post("/update", async (req, res) => {
     }
 })
 //查找一个类型
-router.post("/query", async (req, res) => {
+router.post("/seek", async (req, res) => {
     const {name} = req.body;
     let connection;
     let deletes = `delete
@@ -75,8 +74,10 @@ router.post("/add", async (req, res) => {//当客户端发送一个post请求到
             })
         }
         let adds = " insert into  category  (id,name) values (?,?)"
-        const ids = new Snowflake()
-        const id = ids.generate()
+
+        const flakeIdGen = new FlakeId();
+        const id = flakeIdGen.next().toString("hex");
+
         const arr =[id,name]
         const {errs, col} = await allcategory(adds, arr)
         if (errs == null) {

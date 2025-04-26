@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router();
 const{v4:uuidv4} = require("uuid")
 const mysql =require("mysql2/promise.js")//E:/GeRenBoKe/bokexitong-test/server/db/DbUtils
-const {queryAdmin,insertAdmin} = require("../../db/DbUtils")
+const {queryAdmin,insertAdmin} = require("../../db/Dbadmin")
 //一个处理post请求的路由，路径为/login。
 router.post("/login",async (req,res)=>{//当客户端发送一个post请求到/test时，Express会调用这个回调函数。
     try{

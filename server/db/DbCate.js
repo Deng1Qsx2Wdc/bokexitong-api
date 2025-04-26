@@ -15,7 +15,7 @@ async function allcategory(sell,name)  {
     let connection;
     try{
         connection = await pool.getConnection();
-        const [result] = await connection.query(sell,[name])//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
+        const [result] = await connection.query(sell,name)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
         return result;
     }
     catch(err){
