@@ -1,6 +1,8 @@
 const express = require("express")//引入express
 const multer = require("multer")
 const app = express()//express实例化
+const path = require("path")
+const {queryAdmin,insertAdmin} = require("./db/Dbadmin")
 
 const port = 8080//一个端口
 
@@ -24,6 +26,30 @@ const update = multer({
     dest:"./public/upload/temp"
 })
 app.use(update.any())
+app.use(express.static(path.join(__dirname, "public")))
+
+const ADMIN_TOKEN_PATH = "/token"
+app.use(async(req,res,next)=>{
+    if(req.path.indexOf(ADMIN_TOKEN_PATH) > -1) {
+
+        const token = req.headers.token
+
+        const seek = "select * from admin where token = ?"
+        const {cat} = await queryAdmin(seek, [token]);
+
+        if (cat.err != null) {
+            res.send({
+                code: 403,
+                msg: "请先登录"
+            })
+            return
+        } else {
+            next()
+        }
+    }else{
+        next()
+    }
+})
 
 const admin = require("./src/router/AdminRouter")//账户
 app.use("/admin",admin)

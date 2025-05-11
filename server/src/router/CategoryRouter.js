@@ -5,7 +5,7 @@ const {v4: uuidv4} = require("uuid")
 const mysql = require("mysql2/promise.js")//E:/GeRenBoKe/bookending-test/server/db/DbUtils
 const FlakeId = require("flake-idgen");
 //修改一个类型
-router.post("/update", async (req, res) => {
+router.post("/token/update", async (req, res) => {
     const {id, name} = req.body;
     const arr = [name, id]
     let connection;
@@ -42,7 +42,7 @@ router.post("/seek", async (req, res) => {
     }
 })
 //删除一个类型
-router.post("/delete", async (req, res) => {
+router.post("/token/delete", async (req, res) => {
     const {name} = req.body;
     let connection;
     let deletes = `delete
@@ -62,7 +62,7 @@ router.post("/delete", async (req, res) => {
     }
 })
 //添加一个类型
-router.post("/add", async (req, res) => {//当客户端发送一个post请求到/test时，Express会调用这个回调函数。
+router.post("/token/add", async (req, res) => {//当客户端发送一个post请求到/test时，Express会调用这个回调函数。
     try {
         const {name} = req.body
         let seek = " select * from category where name = ? "

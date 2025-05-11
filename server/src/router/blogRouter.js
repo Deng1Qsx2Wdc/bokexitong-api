@@ -6,7 +6,7 @@ const mysql = require("mysql2/promise.js")//E:/GeRenBoKe/bookending-test/server/
 const {allblog, updatecategory} = require("../../db/Dbblog")
 const FlakeId = require("flake-idgen");
 //添加
-router.post("/add", async (req, res) => {
+router.post("/token/add", async (req, res) => {
             const  { category_id , title , content  }  = req.body
             const create_time = new Date().getTime()
 
@@ -31,7 +31,7 @@ router.post("/add", async (req, res) => {
             }
 })
 //更新
-router.post("/update", async (req, res) => {
+router.post("/token/update", async (req, res) => {
     const  { boke_id,category_id , title , content  }  = req.body
     const create_time = new Date().getTime()
     const sqll = " update blog set  category_id =?, title =? ,content = ? ,create_time = ? where boke_id = ? "
@@ -51,7 +51,7 @@ router.post("/update", async (req, res) => {
     }
 })
 //删除
-router.post("/delete", async (req, res) => {
+router.post("/token/delete", async (req, res) => {
     const {boke_id,title} = req.body
     const sqll = "delete from blog where boke_id = ? and title = ?"
     const arr = [boke_id,title]
