@@ -105,9 +105,6 @@ router.get("/seek", async (req, res) => {
 
     const {err,cow} = await  allblog(spli,arr)
     if(err==null){
-        let seek = `delete
-                   from category
-                   where id = ?`
         res.send({
             code:200,
             msg:"查询成功",
@@ -119,12 +116,12 @@ router.get("/seek", async (req, res) => {
                 pageSize,
             }
         })
-    }else{}
-    res.send({
-        code:500,
-        msg:"查询失败"
-    })
+    }else {
+        res.send({
+            code: 500,
+            msg: "查询失败"
+        })
+    }
 })
-
 module.exports = router
 

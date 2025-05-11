@@ -34,6 +34,10 @@ app.use("/category",category)
 const  blog = require("../server/src/router/blogRouter")//博客
 app.use("/blog",blog)
 
+const  upload = require("../server/src/router/uploadRouter")//博客
+app.use("/upload",upload)
+
+
 //根路由
 app.get("/",(req,res)=>{
     res.send("Hello World");
