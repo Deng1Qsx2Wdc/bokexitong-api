@@ -17,8 +17,12 @@ async function queryAdmin(arr) {
         connection = await pool.getConnection();
         const sqll = "select * from admin where acount = ? and password = ? and token = ?"
         const values = [arr.acount,arr.password,arr.login_token]
-        const [result] = await connection.query(sqll,values)
-        return result.length>0?1:0;
+        const [rows] = await connection.query(sqll,values)
+        if( rows.length>0)
+            return 1
+        else
+            return 0
+        // return rows.length>0?1:0;//这里有问题，问什么大于0返回的是0
     }
     catch(err){
         console.error("查询错误",err)
