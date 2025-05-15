@@ -11,11 +11,12 @@ router.put("/login1",async (req,res)=>{//当客户端发送一个post请求到/t
             acount,
             password,
         }
-        let sell = "admin = ? and password = ? "
-        const cow = await queryAdmin(sell, arr)
-        if (!cow) {
+        const cow = await queryAdmin(arr)
+        if (cow.length>0) {
             return res.status(200).send({
                 code: 200,
+                data:cow,
+
                 msg: "账户和密码正确"
             })
         } else {
@@ -37,15 +38,20 @@ router.post("/login2",async (req,res)=>{//当客户端发送一个post请求到/
             acount,
             password,
         }
-        let sell = "admin = ? and password = ? "
-        const cow = await queryAdmin(sell, arr)
-        if (!cow) {//这里有问题
+        const cow = await queryAdmin(arr)
+        if (cow.length>0) {
             return res.status(401).send({
                 code:401,
                 msg: "用户已存在"
             })
         }
-        const col = await insertAdmin(arr)
+        const   login_token = uuidv4();
+        const arrs = {
+            acount,
+            password,
+            login_token
+        }
+        const col = await insertAdmin(arrs)
         if(col){
             res.send({
                 code:200,

@@ -15,14 +15,11 @@ async function queryAdmin(arr) {
     let connection;
     try{
         connection = await pool.getConnection();
-        const sqll = "select * from admin where acount = ? and password = ? and token = ?"
-        const values = [arr.acount,arr.password,arr.login_token]
+        const sqll = "select * from admin where acount = ? and password = ?"
+        const values = [arr.acount,arr.password]
         const [rows] = await connection.query(sqll,values)
-        if( rows.length>0)
-            return 1
-        else
-            return 0
-        // return rows.length>0?1:0;//这里有问题，问什么大于0返回的是0
+        connection.release()
+        return rows;
     }
     catch(err){
         console.error("查询错误",err)
@@ -39,6 +36,7 @@ async function insertAdmin(arr) {
         const sqll = "insert into admin (acount,password,token) values (?,?,?)"
         const values = [arr.acount,arr.password,arr.login_token]
         const [result] = await connection.query(sqll,values)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
+        connection.release()
         return result.affectedRows > 0;//是 MySQL 操作结果对象的一个属性，表示 受影响的数据库行数。
                                         //对于 INSERT 操作，成功插入一条记录时，affectedRows 的值为 1；失败则为 0。
     }

@@ -1,12 +1,12 @@
 import {createRouter,createWebHashHistory } from "vue-router"
 import Test from '../views/Test.vue'
 import Admin from "@/views/Login.vue";
-// let routes = []
+import Dashboard from "../views/dashboard/Dashboard.vue"
 
-const routes = [
+const router = [
     {path:'/test',component:Test},
-    {path: '/admin', component: Admin,
-},
+    {path:'/dashboard',component:Dashboard},
+    {path: '/admin', component: Test},
 ]
 
 
@@ -15,4 +15,4 @@ const routes = [
 //     routes
 // });
 
-export default routes
+export default router
