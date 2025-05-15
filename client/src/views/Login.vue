@@ -1,6 +1,7 @@
 <script setup>
 import {ref,reactive,inject} from "vue";
 import {AdminStore} from "@/stores/AdminStore.js";
+// import  { ConfigProviderProps } from "naive-ui";
 
 const axios = inject("axios")
 const adminStore = AdminStore()
@@ -8,6 +9,13 @@ const adminStore = AdminStore()
 import { useRouter,useRoute} from "vue-router";
 const router = useRouter()
 const route = useRoute()
+
+// const { message, notification, dialog, loadingBar, modal } = createDiscreteApi(
+// 		['message', 'dialog', 'notification', 'loadingBar', 'modal'],
+// 		{
+// 			configProviderProps: configProviderPropsRef
+// 		}
+// )
 
 const admin = reactive({
 	account: localStorage.getItem("account")|| "",
@@ -38,8 +46,9 @@ const login1 = async () => {
 			localStorage.setItem("password",admin.password)
 			localStorage.setItem("rember",admin.rember?1:0)
 			router.push("/dashboard")
+			// message.info('登录成功')
 		}else{
-
+			// message.info('登录失败')
 		}
 	}
 	console.log(result)
