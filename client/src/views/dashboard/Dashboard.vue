@@ -27,12 +27,12 @@ const route = useRoute()
 
 <template>
 	<div class = "main-pinel">
-		<div  class="sex" >
+		<div  class="left" >
 			<div v-for="(menu,index) in menus" @click = "toPage(menu)">
 				{{menu.name}}
 			</div>
-		</div>
-		<div  style="padding: 20px;width: 100%">
+		</div >
+		<div class="right" >
 			<router-view></router-view>
 		</div>
 	</div>
@@ -41,12 +41,10 @@ const route = useRoute()
 <style scoped>
 .main-pinel {
 	display: flex;
-	width: 150px;
 	height: 100vh;
 	border-right: 1.5px inset #bbbbbb;
 }
-.sex {
-
+.left {
 	div{
 		display: flex;
 		width: 150px;
@@ -58,8 +56,11 @@ const route = useRoute()
 			cursor: pointer;
 			color: #f0ad4e;
 		}
-
 	}
-
 }
+.right {
+	flex: 1;
+	padding: 20px;
+}
+
 </style>

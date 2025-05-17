@@ -1,21 +1,15 @@
 <script setup>
 import {ref,reactive,inject} from "vue";
 import {AdminStore} from "@/stores/AdminStore.js";
-// import  { ConfigProviderProps } from "naive-ui";
 
 const axios = inject("axios")
 const adminStore = AdminStore()
+const message = inject("message")
 
 import { useRouter,useRoute} from "vue-router";
 const router = useRouter()
 const route = useRoute()
 
-// const { message, notification, dialog, loadingBar, modal } = createDiscreteApi(
-// 		['message', 'dialog', 'notification', 'loadingBar', 'modal'],
-// 		{
-// 			configProviderProps: configProviderPropsRef
-// 		}
-// )
 
 const admin = reactive({
 	account: localStorage.getItem("account")|| "",
@@ -33,28 +27,26 @@ const rules = {
 	]
 }
 const login1 = async () => {
-	const result = await  axios.put("http://localhost:8080/admin/login1",{
-		acount:admin.account,
-		password:admin.password
+	const result = await axios.post("http://localhost:8080/admin/login1", {
+		acount: admin.account,
+		password: admin.password
 	})
 	if (result.data.code == 200) {
-		adminStore.acount = result.data.data[0].acount;
-		adminStore.id = result.data.data[0].id;
-		adminStore.token = result.data.data[0].token;
-		if (admin.rember){
-			localStorage.setItem("account",admin.account)
-			localStorage.setItem("password",admin.password)
-			localStorage.setItem("rember",admin.rember?1:0)
-			router.push("/dashboard")
-			// message.info('登录成功')
-		}else{
-			// message.info('登录失败')
-		}
+		// console.log("200")
+			adminStore.acount = result.data.data[0].acount;
+			adminStore.id = result.data.data[0].id;
+			adminStore.token = result.data.data[0].token;
+			if (admin.rember) {
+				localStorage.setItem("account", admin.account)
+				localStorage.setItem("password", admin.password)
+				localStorage.setItem("rember", admin.rember ? 1 : 0)
+				router.push("/dashboard")
+			}
+			message.info('登录成功')
 	}
-	console.log(result)
 }
 const login2 = async () => {
-	const result = await  axios.post("http://localhost:8080/admin/login2",{
+	const result = await  axios.put("http://localhost:8080/admin/login2",{
 		acount:admin.account,
 		password:admin.password
 	})

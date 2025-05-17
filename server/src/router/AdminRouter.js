@@ -4,23 +4,26 @@ const{v4:uuidv4} = require("uuid")
 const mysql =require("mysql2/promise.js")//E:/GeRenBoKe/bokexitong-test/server/db/DbUtils
 const {queryAdmin,insertAdmin} = require("../../db/Dbadmin")
 //一个处理put请求的路由，路径为/login，登录
-router.put("/login1",async (req,res)=>{//当客户端发送一个post请求到/test时，Express会调用这个回调函数。
+router.post("/login1",async (req,res)=>{//当客户端发送一个post请求到/test时，Express会调用这个回调函数。
     try {
         const {acount, password} = req.body
         const arr = {
             acount,
             password,
         }
-        const cow = await queryAdmin(arr)
-        if (cow.length>0) {
+        const {result} = await queryAdmin(arr)
+        const col = 401
+        if (result.length>0) {
             return res.status(200).send({
                 code: 200,
-                data:cow,
-
+                data:result,
                 msg: "账户和密码正确"
             })
         } else {
-            return res.status(401).send({code: 401, msg: "账户或密码错误"});
+            return res.status(401).send({
+                code: 401,
+                data:result,
+                msg: "账户或密码错误"});
         }
     }catch(err){
         console.log("登录错误：",err)

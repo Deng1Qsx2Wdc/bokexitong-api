@@ -17,13 +17,31 @@ async function queryAdmin(arr) {
         connection = await pool.getConnection();
         const sqll = "select * from admin where acount = ? and password = ?"
         const values = [arr.acount,arr.password]
-        const [rows] = await connection.query(sqll,values)
+        const [result] = await connection.query(sqll,values)
+        // console.log(result)
         connection.release()
-        return rows;
+        return {result};
     }
     catch(err){
         console.error("查询错误",err)
-        throw err
+        throw {err}
+    }finally{
+        if(connection)
+            connection.release()
+    }
+}
+async function tokenAdmin(sqll,arr) {
+    let connection;
+    try{
+        connection = await pool.getConnection();
+        const [result] = await connection.query(sqll,arr)
+        // console.log(result)
+        connection.release()
+        return {result};
+    }
+    catch(err){
+        console.error("查询错误",err)
+        throw {err}
     }finally{
         if(connection)
             connection.release()
@@ -49,7 +67,7 @@ async function insertAdmin(arr) {
     }
 }
 
-module.exports = {queryAdmin,insertAdmin};//将pool和genid导出文件，可以在其他文件中使用
+module.exports = {queryAdmin,tokenAdmin,insertAdmin};//将pool和genid导出文件，可以在其他文件中使用
 
 
 //const [result] = await connection.query("INSERT INTO users (name) VALUES ('John')");

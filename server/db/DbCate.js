@@ -11,16 +11,18 @@ const pool = mysql.createPool({//数据库连接池，能够复用数据库连�
     port     : "3306"
 });
 //增删查
-async function allcategory(sell,name)  {
+async function allcategory(sell,arrs)  {
     let connection;
     try{
         connection = await pool.getConnection();
-        const [result] = await connection.query(sell,name)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
-        return result;
+        // console.log("result")
+        const [results1] = await connection.query(sell,arrs)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
+        // console.log(results1)
+        return {results1}
     }
     catch(err){
         console.error("程序错误",err)
-        throw err
+       return {err}
     }finally{
         if(connection)
             connection.release()
@@ -32,27 +34,49 @@ async function updatecategory(sell,arr = []) {
     try{
         connection = await pool.getConnection();
         const [result] = await connection.query(sell,arr)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
-        return result;
+        return {result};
     }
     catch(err){
         console.error("程序错误",err)
-        throw err
+        throw {err}
     }finally{
         if(connection)
             connection.release()
     }
 }
-module.exports = { allcategory,updatecategory };//将pool和genid导出文件，可以在其他文件中使用
-
-
-//const [result] = await connection.query("INSERT INTO users (name) VALUES ('John')");
-//console.log(result);
-// 输出
-// {
-//   fieldCount: 0,
-//   affectedRows: 1,  // 插入了一行
-//   insertId: 42,      // 新插入行的自增 ID
-//   info: '...',
-//   serverStatus: 2,
-//   warningStatus: 0
+//查找全部
+async function category() {
+    let connection;
+    try{
+        connection = await pool.getConnection();
+        const sqll = "select * from category "
+        const [result] = await connection.query(sqll)
+        connection.release()
+        // console.log(rows)
+        return {result};
+    }
+    catch(err){
+        console.error("查询错误",err)
+        throw {err}
+    }finally{
+        if(connection)
+            connection.release()
+    }
+}
+// async function category(sell)  {
+//     let connection;
+//     try{
+//         console.log("sss")
+//         connection = await pool.getConnection();
+//         const [result] = await connection.query(sell)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
+//         return result;
+//     }
+//     catch(err){
+//         console.error("程序错误",err)
+//         throw err
+//     }finally{
+//         if(connection)
+//             connection.release()
+//     }
 // }
+module.exports = { allcategory,updatecategory,category };//将pool和genid导出文件，可以在其他文件中使用
