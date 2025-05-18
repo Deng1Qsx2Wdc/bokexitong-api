@@ -7,7 +7,8 @@ const mysql = require("mysql2/promise.js")//E:/GeRenBoKe/bookending-test/server/
 const {allblog, updatecategory} = require("../../db/Dbblog")
 const FlakeId = require("flake-idgen");
 
-router.post("/update",async (req,res)=>{
+router.post("/editor_upload",async (req,res)=>{
+   // console.log(req.files)
     if(!req.files){
         res.send({
             "errno":1,
@@ -29,7 +30,8 @@ router.post("/update",async (req,res)=>{
         path.join(process.cwd(),"public","upload","icons",cop)//将文件名替换为cop，并储存在指定位置
     )
 
-        sex.push("/upload/"+cop)//记录的是文件的路径
+        sex.push("/upload/icons/"+cop)//记录的是文件的路径
+        console.log(sex)
     }
     res.send({
             "errno": 0, // 注意：值是数字，不能是字符串

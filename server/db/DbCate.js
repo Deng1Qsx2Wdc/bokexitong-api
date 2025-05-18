@@ -33,8 +33,9 @@ async function updatecategory(sell,arr = []) {
     let connection;
     try{
         connection = await pool.getConnection();
-        const [result] = await connection.query(sell,arr)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
-        return {result};
+        const [resultrevise] = await connection.query(sell,arr)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
+        // console.log(resultrevise.changedRows)
+        return resultrevise.changedRows//这是数字
     }
     catch(err){
         console.error("程序错误",err)

@@ -1,44 +1,111 @@
 <script setup>
-import {ref, reactive, inject,onMounted} from "vue";
+import {ref, reactive, inject, onMounted} from "vue";
 import {AdminStore} from "@/stores/AdminStore.js";
 
 const axios = inject("axios")
 const adminStore = AdminStore()
 const message = inject("message")
-
+const dialog = inject("dialog")
 
 import {useRouter, useRoute} from "vue-router";
 
 const router = useRouter()
 const route = useRoute()
 
-const menus= ref([])
+const menus = ref([])
 
-onMounted(()=>{
+onMounted(() => {
 	cate()
 })
-const  showModal =ref(false)
+const showModal = ref(false)
+const ReviseModal = ref(false)
 const formValue = reactive({
-	name:""
+	name: ""
 })
+const ReviseValue = reactive({
+	name: "",
+	id: ""
+})
+
 const cate = async () => {
 	// console.log("执行了")
-	let result = await  axios.post("http://localhost:8080/category/seekall",{
-		params:{name:"1"}
+	let result = await axios.post("http://localhost:8080/category/seekall", {
+		params: {name: "1"}
 	})
-	menus.value =result.data.data
+	menus.value = result.data.data
 	// console.log(menus.value)
+}
+const Revise = async () => {
+	// console.log(ReviseValue)
+	console.log("[Revise] Token:", adminStore.token); // 检查是否为有效值
+	try {
+			const ReviseResult = await axios.post("http://localhost:8080/category/token/revise", {
+			name: ReviseValue.name,
+			id: ReviseValue.id
+		},{
+				headers: {
+					token: adminStore.token
+					// headers: { 'Authorization': `Bearer ${adminStore.token}` }
+				}
+			})
+		if (ReviseResult.request.status === 200) {
+			message.info("修改成功")
+		}
+	}catch (err){
+		if (err.response) {
+			// message.info("请先登陆")
+		}
+	}
 }
 const add = async () => {
 	// console.log(adminStore.token)
-	let result2 = await  axios.post("http://localhost:8080/category/token/add",{
-		name:formValue.name
-	},{
-		headers:{
-			token: adminStore.token
+	try {
+		let result2 = await axios.post("http://localhost:8080/category/token/add", {
+			name: formValue.name
+		}, {
+			headers: {
+				token: adminStore.token
+			}
+		})
+		console.log("result2")
+		if (result2.request.status === 200) {
+			message.info("添加成功")
+		}
+	} catch (err) {
+		if (err.response)
+			message.info("请先登陆")
+	}
+}
+const deletes = async (menu) => {
+	console.log(menu)
+
+	dialog.warning({
+		title: '警告',
+		content: '是否删除？',
+		positiveText: '确定',
+		negativeText: '不确定',
+		draggable: true,
+		onPositiveClick: async () => {
+			try {
+				let result2 = await axios.post("http://localhost:8080/category/token/delete", {
+					name: menu.name,
+					id: menu.id
+				}, {
+					headers: {
+						token: adminStore.token
+					}
+				})
+				if (result2.request.status === 200) {
+					message.info("删除成功")
+				}
+			} catch (err) {
+				if (err.response)
+					message.info("请先登陆")
+			}
+		},
+		onNegativeClick: () => {
 		}
 	})
-	// console.log(result2)
 }
 </script>
 
@@ -54,24 +121,38 @@ const add = async () => {
 		</thead>
 		<tbody>
 		<tr v-for="(menu,id) in menus " :key="menus.id">
-<!--			<td>menu.name</td>-->
-			<td>{{ menu.name}}</td>
+			<!--			<td>menu.name</td>-->
+			<td>{{ menu.name }}</td>
 			<td>{{ menu.id }}</td>
-<!--			<td>menu.id </td>-->
 			<td>
-				<button >修改</button>
-				<button>删除</button>
+				<n-space>
+					<n-button @click="ReviseModal = true;ReviseValue.id = menu.id">修改</n-button>
+					<n-button @click="deletes(menu)">删除</n-button>
+				</n-space>
 			</td>
 		</tr>
 		</tbody>
 	</n-table>
+	<n-modal v-model:show="ReviseModal" preset="dialog" title="Dialog">
+		<template #header>
+			<div>请输入类型的新名称</div>
+		</template>
+		<div>
+			<n-form-item>
+				<n-input v-model:value="ReviseValue.name" placeholder="输入类型名"/>
+			</n-form-item>
+		</div>
+		<template #action>
+			<n-button @click="Revise">确认</n-button>
+		</template>
+	</n-modal>
 	<n-modal v-model:show="showModal" preset="dialog" title="Dialog">
 		<template #header>
 			<div>添加新类型</div>
 		</template>
 		<div>
-			<n-form-item >
-				<n-input  v-model:value="formValue.name" placeholder="输入类型名" />
+			<n-form-item>
+				<n-input v-model:value="formValue.name" placeholder="输入类型名"/>
 			</n-form-item>
 		</div>
 		<template #action>
