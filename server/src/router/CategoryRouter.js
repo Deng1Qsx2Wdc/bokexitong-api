@@ -37,7 +37,7 @@ router.post("/token/add", async (req, res) => {//当客户端发送一个post请
 				// console.log(results)
 				// console.log("result")
 				if (errs == null) {
-						res.send({
+						res.status(200).send({
 								code: 200,
 								msg: "添加成功",
 								data: results

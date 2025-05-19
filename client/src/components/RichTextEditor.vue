@@ -55,7 +55,6 @@ editorConfig.MENU_CONF['insertImage'] = {
 		// checkImage: customCheckImageFn,
 
 }
-
 // 组件销毁时，也及时销毁编辑器，重要！
 onBeforeUnmount(() => {
 	const editor = editorRef.value;
@@ -66,19 +65,26 @@ onBeforeUnmount(() => {
 
 // 编辑器回调函数
 const handleCreated = (editor) => {
-	console.log('created', editor);
+	// console.log('created', editor);
 	editorRef.value = editor; // 记录 editor 实例，重要！
 };
-const handle = (editor) => {
-	if (!editor) return;
-	// console.log(editor)
-	// console.log("editor")
-	const html = editor.getHtml();
-	console.log(html)
-	emit('content-update',html)//emit()
-};
+
 const handleDestroyed = (editor) => {
-	console.log('destroyed', editor);
+	// console.log('destroyed', editor);
+};
+const handleChange =(editor)=>{
+	// console.log(valueHtml.value)
+	emit('content-update',editor.getText())//emit()
+}
+const customPaste = (editor, event, callback) => {
+	console.log('ClipboardEvent 粘贴事件对象', event);
+
+	// 自定义插入内容
+	editor.insertText('xxx');
+
+	// 返回值（注意，vue 事件的返回值，不能用 return）
+	callback(false); // 返回 false ，阻止默认粘贴行为
+	// callback(true) // 返回 true ，继续默认的粘贴行为
 };
 </script>
 
@@ -91,20 +97,22 @@ const handleDestroyed = (editor) => {
 				:mode="mode"
 				style="border-bottom: 1px solid #ccc"
 		/>
-<!--		:editor 将工具栏绑定到编辑器实例（editorRef）-->
-<!--		:defaultConfig 配置工具栏的默认行为和显示内容。-->
-<!--		:mode 设置工具栏的显示模式，通常为 'default'（完整模式）或 'simple'（简洁模式）-->
+		<!--				:editor 将工具栏绑定到编辑器实例（editorRef）-->
+		<!--				:defaultConfig 配置工具栏的默认行为和显示内容。-->
+		<!--				:mode 设置工具栏的显示模式，通常为 'default'（完整模式）或 'simple'（简洁模式）-->
 		<Editor
 				:defaultConfig="editorConfig"
 				:mode="mode"
 				v-model="valueHtml"
 				style="height: 400px; overflow-y: hidden"
 				@onCreated="handleCreated"
+				@onChange = "handleChange"
 				@onDestroyed="handleDestroyed"
+				@customPaste="customPaste"
 		/>
-<!--		v-model 实现编辑器内容的 双向绑定，valueHtml 是 Vue 组件的响应式变量，存储编辑器的 HTML 内容-->
-<!--		@onFocus="handleFocus"-->
-<!--		@onBlur="handleBlur"-->
+		<!--				v-model 实现编辑器内容的 双向绑定，valueHtml 是 Vue 组件的响应式变量，存储编辑器的 HTML 内容-->
+		<!--				@onFocus="handleFocus"-->
+		<!--				@onBlur="handleBlur"-->
 
 		<!--				@onCreated（编辑器初始化完成时触发，通常用于获取编辑器实例）-->
 		<!--				@onChange（编辑器内容变化时触发，用于实时保存或校验内容）-->
@@ -113,14 +121,6 @@ const handleDestroyed = (editor) => {
 		<!--				@customPaste（自定义粘贴行为）-->
 		<!--				@customAlert（自定义提示）-->
 	</div>
-	<n-button @click ="handle">提交</n-button>
-<!--	<div style="margin-top: 10px">-->
-<!--      <textarea-->
-<!--		      v-model="valueHtml"-->
-<!--		      readonly-->
-<!--		      style="width: 100%; height: 200px; outline: none"-->
-<!--      ></textarea>-->
-<!--	</div>-->
 </div>
 </template>
 

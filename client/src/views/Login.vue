@@ -27,6 +27,7 @@ const rules = {
 	]
 }
 const login1 = async () => {
+	console.log(adminStore.token)
 	const result = await axios.post("http://localhost:8080/admin/login1", {
 		acount: admin.account,
 		password: admin.password
@@ -77,7 +78,8 @@ const login2 = async () => {
 <style lang="scss"  scoped>
 .login-pane {
 	display: flex;
-
+	justify-content: center;
+	//align-content: center;
 }
 .n-card {
 	width: 350px;

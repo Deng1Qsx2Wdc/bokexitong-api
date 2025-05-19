@@ -7,25 +7,36 @@ const {allblog, updatecategory} = require("../../db/Dbblog")
 const FlakeId = require("flake-idgen");
 //添加
 router.post("/token/add", async (req, res) => {
-            const  { category_id , title , content  }  = req.body
-            const create_time = new Date().getTime()
+            try {
+                const {category_id, title, content} = req.body
+                const create_time = new Date().getTime()
 
-            const flakeIdGen = new FlakeId();//博客文章的ID
-            const boke_id = flakeIdGen.next().toString("hex");
+                const flakeIdGen = new FlakeId();//博客文章的ID
+                const boke_id = flakeIdGen.next().toString("hex");
 
-            const sqll = "insert into blog (boke_id,category_id , title ,content ,create_time) values (?,?,?,?,?)"
-            const arr = [boke_id,category_id , title ,content ,create_time]
+                const sqll = "insert into blog (boke_id,category_id , title ,content ,create_time) values (?,?,?,?,?)"
+                const arr = [boke_id, category_id, title, content, create_time]
 
-            const {err,cow} = await  allblog(sqll,arr)
-            if(err==null){
-                res.send({
-                    code:200,
-                    msg:"添加新博客成功"
-                })
-            }else{
-                res.send({
-                    code:500,
-                    msg:"添加新博客失败"
+                const {result, err} = await allblog(sqll, arr)
+                // console.log(result)
+                if (err == null) {
+                    res.status(200).send({
+                        code: 200,
+                        data: {result},
+                        msg: "添加新博客成功"
+                    })
+                } else {
+                    res.status(500).send({
+                            code: 500,
+                            data: {result},
+                            msg: "添加新博客失败"
+                        }
+                    )
+                }
+            }catch (err){
+                res.status(500).send({
+                        code: 500,
+                        msg: "添加错误"
                     }
                 )
             }
