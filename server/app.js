@@ -2,7 +2,7 @@ const express = require("express")//引入express
 const multer = require("multer")
 const app = express()//express实例化
 const path = require("path")
-const {tokenAdmin,queryAdmin,insertAdmin} = require("./db/Dbadmin")
+const {tokenAdmin,queryAdmin,insertAdmin} = require("./db/admin")
 const cors = require('cors');
 const port = 8080//一个端口
 
@@ -12,22 +12,45 @@ app.use(express.json())//中间件配置，json,用于前后端的交互，尽�
 //     //设置允许跨域的域名，*是允许任意域名跨域
 //     res.header("Access-Control-Allow-Origin","*")
 //     //设置允许的Headers类型
-//     res.header("Access-Control-Allow-Headers","'Content-Type, Token'")
+//     res.header("Access-Control-Allow-Headers","*")
 //     //设置允许的请求方式
 //     res.header("Access-Control-Allow-Methods","DELETE,PUT,POST,GET,OPTIONS")
 //     //让options尝试请求 快速结束
 //     req.method === 'OPTIONS' ? res.sendStatus(200) : next();  //快请求
 //     // else next();
 // })
+// CORS跨域中间件配置（推荐放在路由最前面）
+app.use(function(req, res, next) {
+    // 允许跨域的域名（生产环境建议替换为具体域名）
+    res.header("Access-Control-Allow-Origin", "*");
+
+    // 允许携带凭证（如需Cookie需设置为具体的origin域名，不能为*）
+    // res.header("Access-Control-Allow-Credentials", "true");
+
+    // 允许的请求头类型（生产环境建议明确指定必要字段）
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With,token");
+
+    // 允许的HTTP方法
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+
+    // 处理OPTIONS预检请求（必须返回200）
+    if (req.method === 'OPTIONS') {
+        // 添加缓存时间减少预检请求（单位秒）
+        res.header("Access-Control-Max-Age", "86400");
+        return res.sendStatus(200);
+    }
+    // 继续处理后续请求
+    next();
+});
 // 后端中间件标准化头部字段（app.js）
 // const token = req.headers.token || req.headers['Token'];
-app.use(cors({
-    origin: 'http://localhost:5174',  // 允许前端源
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // 允许的请求方法
-    allowedHeaders: ['Content-Type', 'Authorization', 'token', 'headers'],  // 允许的请求头
-    exposedHeaders: ['Token'],
-    credentials: true  // 允许携带凭证（如 Cookie）
-}));
+// app.use(cors({
+//     origin: 'http://localhost:5173',  // 允许前端源
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'],  // 允许的请求方法
+//     allowedHeaders: ['Content-Type', 'Authorization', 'token', 'headers'],  // 允许的请求头
+//     exposedHeaders: ['Token'],
+//     credentials: true  // 允许携带凭证（如 Cookie）
+// }));
 // Express 中配置 CORS 中间件
 // app.use((req, res, next) => {
 //     res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // 允许前端源
@@ -64,7 +87,7 @@ app.use(async (req, res, next) => {
             // 在中间件中添加日志
             // console.log('Received Headers:', req.headers);
             // console.log('Token Value:', token);
-            // console.log(token)
+            console.log(token)
             const { result} = await tokenAdmin("SELECT * FROM admin WHERE token=?", [token]);
             // console.log(result)
             const useless ="无用"

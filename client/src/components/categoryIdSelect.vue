@@ -10,10 +10,21 @@ import {onMounted, ref} from 'vue'
 const menus = ref([])
 
 const cate = async () => {
-	// console.log("执行了")
-	let result = await axios.post("http://localhost:8080/category/seekall", {
-		params: {name: "1"}
-	})
+	// console.log("adminStore.token")
+	try {
+		let result = await axios.post("http://localhost:8080/category/token/seekall", {
+			params: {
+				name: "1"
+			},
+			headers: {
+				token: adminStore.token
+				// headers: { 'Authorization': `Bearer ${adminStore.token}` }
+			}
+		})
+		console.log("cate")
+	}catch(err) {err}{
+		console.log(err)
+	}
 	menus.value = result.data.data
 	// console.log(menus.value)
 }

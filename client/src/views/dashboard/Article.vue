@@ -1,7 +1,30 @@
 <template>
-	<n-tabs default-value="addArticle" justify-content="space-evenly" type="line">
-		<n-tab-pane name="oasis" tab="列表">
-
+	<n-tabs default-value="articleList" justify-content="space-evenly" type="line">
+		<n-tab-pane name="articleList" tab="文章列表">
+			<div>
+				<div v-for="(blog,id) in menus" :key="id" style="margin-bottom: 15px">
+					<n-card :title="blog.title">
+						<template #header-extra>
+<!--							{{blog.title}}-->
+						</template>
+<!--						卡片内容-->
+						<template #footer>
+							{{blog.content}}
+						</template>
+						<template #action>
+							<span style="display: block">
+								发布时间:{{ blog.create_time }}
+							</span>
+							<n-button>
+								修改
+							</n-button>
+							<n-button>
+								删除
+							</n-button>
+						</template>
+					</n-card>
+				</div>
+			</div>
 		</n-tab-pane>
 		<n-tab-pane name="addArticle" tab="添加文章">
 			<n-form>
@@ -15,12 +38,13 @@
 					<rich-text-editor @content-update="addArticle.content"></rich-text-editor>
 				</n-form-item>
 			</n-form>
+			<n-button @click ="handle">提交</n-button>
 		</n-tab-pane>
-		<n-tab-pane name="jay chou" tab="周杰伦">
+		<n-tab-pane name="jay chou" tab="第三模块">
 			七里香
 		</n-tab-pane>
 	</n-tabs>
-	<n-button @click ="handle">提交</n-button>
+
 </template>
 
 
@@ -29,33 +53,53 @@ import {ref, reactive, toRaw,inject, onMounted} from "vue";
 import RichTextEditor from "../../components/RichTextEditor.vue"
 const axios = inject("axios")
 import {AdminStore} from "@/stores/AdminStore.js";
-
+// import dayjs from "dayjs"
 
 const message = inject("message")
 
 const adminStore = AdminStore()
 
+// let timer = ref(null);
+// const startTimer = () => {
+// 	timer = setInterval(() => {
+// 		console.log('Timer running...');
+// 	}, 1000);
+// }
+
 onMounted(() => {
-	mate()
+	cate()
+	// () => {
+	// 	if (timer) clearInterval(timer); // 清理定时器
+	// }
 })
-const options =ref([])
-const mate = async () => {
+
+const menus = ref([])
+
+const cate = async () => {
 	// console.log("执行了")
-	let result = await axios.post("http://localhost:8080/category/seekall", {
-		params: {name: "1"}
-	})
-	options.value = result.data.data.map((item)=>{
-		// console.log(item)
-		//map 是 JavaScript 数组的方法，用于遍历数组中的每个元素，
-		// 并对每个元素执行一个函数，最终返回一个新数组。
-		return {
-			label:item.name,
-			value:item.id
+	let result = await axios.get("http://localhost:8080/blog/token/seek", {
+		params: {
+			name: "1"
+		},
+		headers: {
+			token: adminStore.token
+			// headers: { 'Authorization': `Bearer ${adminStore.token}` }
 		}
 	})
-	// console.log(options.value)
+	console.log(result.data.data)
+	let temp = result.data.data
+	for (let rows of  result.data.data) {//将遍历到数据取别名为rows
+		const date = new Date(rows.create_time)
+		rows.create_time = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+
+	}
+	menus.value = temp
+	// console.log(menus.value)
 }
+const options =ref([])
+
 const value =ref(null)
+
 
 const addArticle_content =(text)=>{
 	console.log(text)

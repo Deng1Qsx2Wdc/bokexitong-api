@@ -4,8 +4,8 @@ const router = express.Router();
 const {v4: uuidv4} = require("uuid")
 const mysql = require("mysql2/promise.js")//E:/GeRenBoKe/bookending-test/server/db/DbUtils
 const FlakeId = require("flake-idgen");
-const {allcategory, updatecategory, category} = require("../../db/DbCate")
-const {queryAdmin} = require("../../db/Dbadmin");
+const {allcategory, updatecategory, category} = require("../../db/Cate")
+const {queryAdmin} = require("../../db/admin");
 //添加一个类型
 router.post("/token/add", async (req, res) => {//当客户端发送一个post请求到/test时，Express会调用这个回调函数。
 		// console.log("执行了1")
@@ -121,7 +121,7 @@ router.post("/token/seek", async (req, res) => {
 		}
 })
 //查找所有数据
-router.post("/seekall", async (req, res) => {
+router.post("/token/seekall", async (req, res) => {
 		// console.log("执行了")
 		try {
 				const {name} = req.body

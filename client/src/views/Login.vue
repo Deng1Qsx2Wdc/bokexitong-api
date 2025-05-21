@@ -16,6 +16,11 @@ const admin = reactive({
 	password: localStorage.getItem("password")|| "",
 	rember:localStorage.getItem("rember")==1|| false
 })
+// const admin = reactive({
+// 	account:"",
+// 	password: "",
+// 	rember:false
+// })
 const rules = {
 	account: [
 		{ required: true, message: '账号必填', trigger: 'blur' },
@@ -33,17 +38,21 @@ const login1 = async () => {
 		password: admin.password
 	})
 	if (result.data.code == 200) {
-		// console.log("200")
+		console.log("200")
 			adminStore.acount = result.data.data[0].acount;
 			adminStore.id = result.data.data[0].id;
 			adminStore.token = result.data.data[0].token;
+		console.log(adminStore.token)
+		console.log(adminStore.id)
+		console.log(adminStore.acount)
 			if (admin.rember) {
 				localStorage.setItem("account", admin.account)
 				localStorage.setItem("password", admin.password)
 				localStorage.setItem("rember", admin.rember ? 1 : 0)
-				router.push("/dashboard")
 			}
-			message.info('登录成功')
+		router.push("/dashboard")
+		message.info('登录成功')
+		console.log(adminStore.token)
 	}
 }
 const login2 = async () => {

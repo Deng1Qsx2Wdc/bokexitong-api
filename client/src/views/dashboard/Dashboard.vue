@@ -15,6 +15,7 @@ const route = useRoute()
 		{name:"退出",href:"/logout"}
 	]
 	const toPage = (menu)=>{
+	console.log(adminStore.token)
 		if(menu.href === "/logout"){
 			window.location.href ="/login"
 		}else {

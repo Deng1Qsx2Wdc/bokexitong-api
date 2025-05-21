@@ -4,7 +4,7 @@ const {v4: uuidv4} = require("uuid")
 const fs = require("fs")
 const path = require(("path"))
 const mysql = require("mysql2/promise.js")//E:/GeRenBoKe/bookending-test/server/db/DbUtils
-const {allblog, updatecategory} = require("../../db/Dbblog")
+const {allblog, updatecategory} = require("../../db/blog")
 const FlakeId = require("flake-idgen");
 
 router.post("/editor_upload",async (req,res)=>{

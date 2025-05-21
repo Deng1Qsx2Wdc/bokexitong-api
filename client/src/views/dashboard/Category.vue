@@ -76,12 +76,18 @@ const ReviseValue = reactive({
 })
 
 const cate = async () => {
-	// console.log("执行了")
-	let result = await axios.post("http://localhost:8080/category/seekall", {
-		params: {name: "1"}
+	// console.log(adminStore.token)
+	let result = await axios.post("http://localhost:8080/category/token/seekall", {
+				params: {
+					name: "1"
+				}
+			},{
+		headers: {
+			token: adminStore.token,
+		}
 	})
 	menus.value = result.data.data
-	// console.log(menus.value)
+	console.log(menus.value)
 }
 const Revise = async () => {
 	// console.log(ReviseValue)
