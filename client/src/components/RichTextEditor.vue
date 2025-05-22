@@ -75,16 +75,17 @@ const handleDestroyed = (editor) => {
 const handleChange =(editor)=>{
 	// console.log(valueHtml.value)
 	emit('content-update',editor.getText())//emit()
+	console.log(editor.getText());
 }
 const customPaste = (editor, event, callback) => {
 	console.log('ClipboardEvent 粘贴事件对象', event);
 
 	// 自定义插入内容
-	editor.insertText('xxx');
+	// editor.insertText('xxx');
 
 	// 返回值（注意，vue 事件的返回值，不能用 return）
-	callback(false); // 返回 false ，阻止默认粘贴行为
-	// callback(true) // 返回 true ，继续默认的粘贴行为
+	// callback(false); // 返回 false ，阻止默认粘贴行为
+	callback(true) // 返回 true ，继续默认的粘贴行为
 };
 </script>
 

@@ -32,19 +32,19 @@ const rules = {
 	]
 }
 const login1 = async () => {
-	console.log(adminStore.token)
+	// console.log(adminStore.token)
 	const result = await axios.post("http://localhost:8080/admin/login1", {
 		acount: admin.account,
 		password: admin.password
 	})
 	if (result.data.code == 200) {
-		console.log("200")
+		// console.log("200")
 			adminStore.acount = result.data.data[0].acount;
 			adminStore.id = result.data.data[0].id;
 			adminStore.token = result.data.data[0].token;
-		console.log(adminStore.token)
-		console.log(adminStore.id)
-		console.log(adminStore.acount)
+		// console.log(adminStore.token)
+		// console.log(adminStore.id)
+		// console.log(adminStore.acount)
 			if (admin.rember) {
 				localStorage.setItem("account", admin.account)
 				localStorage.setItem("password", admin.password)
@@ -52,7 +52,7 @@ const login1 = async () => {
 			}
 		router.push("/dashboard")
 		message.info('登录成功')
-		console.log(adminStore.token)
+		// console.log(adminStore.token)
 	}
 }
 const login2 = async () => {

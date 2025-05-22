@@ -120,11 +120,11 @@ router.post("/token/seek", async (req, res) => {
 				})
 		}
 })
-//查找所有数据
-router.post("/token/seekall", async (req, res) => {
+//查找所有分类
+router.get("/token/seekall", async (req, res) => {
 		// console.log("执行了")
 		try {
-				const {name} = req.body
+				const {name} = req.query
 				const {result, err} = await category()
 				// console.log("执行了")
 				// console.log(result)

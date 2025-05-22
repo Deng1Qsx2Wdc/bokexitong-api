@@ -87,7 +87,7 @@ app.use(async (req, res, next) => {
             // 在中间件中添加日志
             // console.log('Received Headers:', req.headers);
             // console.log('Token Value:', token);
-            console.log(token)
+            // console.log(token)
             const { result} = await tokenAdmin("SELECT * FROM admin WHERE token=?", [token]);
             // console.log(result)
             const useless ="无用"

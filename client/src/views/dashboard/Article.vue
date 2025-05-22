@@ -24,6 +24,13 @@
 						</template>
 					</n-card>
 				</div>
+				<n-space>
+						<div   class="div-center" @click="Page(PageNu)" v-for="PageNu in PageInfor.pagetotal" >
+							<div class="page" :style="'color:' + (PageNu === PageInfor.page ? 'blue' : 'black') ">
+								{{PageNu}}
+							</div>
+						</div>
+				</n-space>
 			</div>
 		</n-tab-pane>
 		<n-tab-pane name="addArticle" tab="添加文章">
@@ -35,7 +42,7 @@
 					<n-select v-model:value="value" :options="options" />
 				</n-form-item>
 				<n-form-item label="正文:" path="inputValue">
-					<rich-text-editor @content-update="addArticle.content"></rich-text-editor>
+					<rich-text-editor @content-update="addArticle.content = $event"></rich-text-editor>
 				</n-form-item>
 			</n-form>
 			<n-button @click ="handle">提交</n-button>
@@ -59,45 +66,71 @@ const message = inject("message")
 
 const adminStore = AdminStore()
 
-// let timer = ref(null);
-// const startTimer = () => {
-// 	timer = setInterval(() => {
-// 		console.log('Timer running...');
-// 	}, 1000);
-// }
-
 onMounted(() => {
 	cate()
-	// () => {
-	// 	if (timer) clearInterval(timer); // 清理定时器
-	// }
+	mate()
 })
+
+const PageInfor = reactive({
+	page: 1,
+	pageSize:3,
+	blogtotal:0,//博客总数
+	pagetotal:0//总页数
+})
+
+const Page = (PageNum)=>{
+	PageInfor.page = PageNum
+	console.log(PageInfor.page)
+	cate()
+}
 
 const menus = ref([])
 
 const cate = async () => {
 	// console.log("执行了")
+	console.log(PageInfor.page)
 	let result = await axios.get("http://localhost:8080/blog/token/seek", {
-		params: {
-			name: "1"
-		},
+		params: PageInfor,
 		headers: {
 			token: adminStore.token
-			// headers: { 'Authorization': `Bearer ${adminStore.token}` }
 		}
 	})
-	console.log(result.data.data)
-	let temp = result.data.data
-	for (let rows of  result.data.data) {//将遍历到数据取别名为rows
+	PageInfor.blogtotal=result.data.data.sumber
+	PageInfor.pagetotal=Math.floor(PageInfor.blogtotal / PageInfor.pageSize) +(PageInfor.blogtotal % PageInfor.pageSize !==0 ?1:0)
+	console.log(PageInfor.pagetotal)
+	for (let rows of  result.data.data.result) {//将遍历到数据取别名为rows
 		const date = new Date(rows.create_time)
 		rows.create_time = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-
+		rows.content = rows.content.slice(0, 50)+"..."//截取字符串前 50 个字符
 	}
-	menus.value = temp
-	// console.log(menus.value)
+	menus.value = result.data.data.result
+	// console.log(result.data.data.result)
+	console.log(menus.value)
 }
 const options =ref([])
 
+const mate = async () => {
+	// console.log("执行了")
+	try {
+		let result = await axios.get("http://localhost:8080/category/token/seekall", {
+			params: {
+				name: "1"
+			},
+			headers: {
+				token: adminStore.token
+			}
+		})
+		// console.log(result.data.data)
+		options.value = result.data.data.map(item=>({// 对每个数组元素执行箭头函数,返回新数组
+			label:item.name,
+			value:item.id
+		}))
+		// console.log(options.value)
+		// console.log(JSON.stringify(options.value))
+	}catch(err) {
+		console.error('加载失败', error)
+	}
+}
 const value =ref(null)
 
 
@@ -139,8 +172,25 @@ const handle = async () => {
 };
 </script>
 
-
-
 <style scoped>
-
+.div-center {
+	display: flex;
+	justify-content: center;    /* 水平居中 */
+	align-items: center;        /* 垂直居中 */
+	gap: 20px;                  /* 子元素间距 */
+	min-height: 50px;
+}
+.page{
+	display: flex;
+	background-color: silver;
+	justify-content: center;
+	align-items: center;
+	width: 35px;
+	height: 35px;
+	border: 1px solid #85955f;
+	&:hover{
+		cursor: pointer;
+		color: blue;
+	}
+}
 </style>

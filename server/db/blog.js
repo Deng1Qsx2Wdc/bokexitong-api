@@ -16,6 +16,7 @@ async function allblog(sell,arr=[])  {
     try{
         connection = await pool.getConnection();
         const [result] = await connection.query(sell,arr)//返回的结果是一个数组，包含 结果对象 和 字段元数据 两部分
+        // console.log(result)
         return {result};
     }
     catch(err){

@@ -77,15 +77,16 @@ const ReviseValue = reactive({
 
 const cate = async () => {
 	// console.log(adminStore.token)
-	let result = await axios.post("http://localhost:8080/category/token/seekall", {
+	let result = await axios.get("http://localhost:8080/category/token/seekall", {
 				params: {
 					name: "1"
 				}
-			},{
-		headers: {
-			token: adminStore.token,
-		}
-	})
+				,
+				headers: {
+					token: adminStore.token,
+				}
+			}
+	)
 	menus.value = result.data.data
 	console.log(menus.value)
 }

@@ -88,8 +88,8 @@ router.get("/token/seek", async (req, res) => {
 
         keyword = keyword || ""
         categoryID = categoryID || ""
-        page = page != null || 1
-        pageSize = pageSize || 10
+        page = (page !== 0)?page:1
+        pageSize = (pageSize !== 0)?pageSize:3
 
         let spli = "select * from blog"
 
@@ -112,15 +112,31 @@ router.get("/token/seek", async (req, res) => {
                 arr.push(categoryID)
             }
         }
-        spli = spli + " order by create_time DESC limit ?,? "
-        arr.push((page - 1) * 10)
+            //firstResult：解构后自定义的新变量名。result = firstResult
+        const {result:firstResult,err:firstErr} = await allblog(spli, arr)//正常查询
+        // console.log(firstErr)
+
+       // console.log(sumber)
+        spli = spli +" order by create_time DESC limit ?,? "
+        arr.push((page - 1) * pageSize)
+        // console.log(page)
         arr.push((Number(pageSize)))
 
-        const {result,err} = await allblog(spli, arr)
+        const {result,err} = await allblog(spli, arr)//分页查询
+        // console.log(result)
         if (err == null) {
+            let sumber = 0
+            for(let row of firstResult){
+                sumber ++
+            }
             res.send({
                 code: 200,
-                data: result,
+                data:
+                    {
+                    result:result,
+                    sumber:sumber,
+                }
+                ,
                 msg: "查询成功"
             })
         } else {
