@@ -1,37 +1,35 @@
 <script setup>
-import {ref, reactive, inject, shallowRef,onMounted,onBeforeUnmount} from "vue";
+import {ref, watch,reactive, inject, shallowRef,onMounted,onBeforeUnmount} from "vue";
 import '@wangeditor/editor/dist/css/style.css';
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
-const server_url = inject("server_url")
-
-// 编辑器实例，必须用 shallowRef，重要！
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
 
-// 内容 HTML
-const valueHtml = ref("");
+const emit = defineEmits(['update:modelValue'])//defineEmits 声明组件可触发的事件
+const toolbarConfig = {}
+const mode =ref('default')// 编辑器模式（default/simple）
 
-// // 模拟 ajax 异步获取内容
-// onMounted(() => {
-// 	setTimeout(() => {
-// 		valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>';
-// 	}, 1500);
-// });
+let editor = null
 
-const emit = defineEmits(["content-update"])//defineEmits 声明组件可触发的事件
+const editorRef = shallowRef()// 编辑器实例（使用 shallowRef）
 
-const toolbarConfig = {
-
-};
-const mode =ref('default')
-
-const editorRef = shallowRef()
 const editorConfig = { placeholder: '请输入内容...' };
 editorConfig.MENU_CONF ={}
+
+const props = defineProps({
+	modelValue: {// 固定名称，用于 v-model
+		type: String,
+		default: ''
+	} // 默认使用 modelValue 接收数据
+});
+
+const valueHtml = ref(props.modelValue)// 内容 HTML
+
 editorConfig.MENU_CONF['uploadImage'] = {
 	// 上传图片的配置
 	base64LimitSize:10 * 1024,//10kb
 	server: 'http://localhost:8080/upload/editor_upload',
 }
+
 const  customParseImageSrc =(src)=>{
 	console.log(src)
 		if(src.indexOf("http")!=0){
@@ -49,20 +47,18 @@ const coutParseImageSrc =(imageNode)=> {
 	const { src, alt, url, href } = imageNode
 	console.log('inserted image', src, alt, url, href)
 }
-editorConfig.MENU_CONF['insertImage'] = {
-	parseImageSrc: customParseImageSrc,
-	onInsertedImage:coutParseImageSrc
-		// checkImage: customCheckImageFn,
-
-}
 // 组件销毁时，也及时销毁编辑器，重要！
 onBeforeUnmount(() => {
 	const editor = editorRef.value;
 	if (editor == null) return;
-
 	editor.destroy();
 });
+editorConfig.MENU_CONF['insertImage'] = {
+	parseImageSrc: customParseImageSrc,
+	onInsertedImage:coutParseImageSrc
+	// checkImage: customCheckImageFn,
 
+}
 // 编辑器回调函数
 const handleCreated = (editor) => {
 	// console.log('created', editor);
@@ -73,15 +69,15 @@ const handleDestroyed = (editor) => {
 	// console.log('destroyed', editor);
 };
 const handleChange =(editor)=>{
-	// console.log(valueHtml.value)
-	emit('content-update',editor.getText())//emit()
+	// console.log("valueHtml.value")
+	emit('update:modelValue',editor.getText())//emit()
 	console.log(editor.getText());
 }
 const customPaste = (editor, event, callback) => {
 	console.log('ClipboardEvent 粘贴事件对象', event);
 
 	// 自定义插入内容
-	// editor.insertText('xxx');
+	// editor.insertText(editors);
 
 	// 返回值（注意，vue 事件的返回值，不能用 return）
 	// callback(false); // 返回 false ，阻止默认粘贴行为
@@ -111,7 +107,7 @@ const customPaste = (editor, event, callback) => {
 				@onDestroyed="handleDestroyed"
 				@customPaste="customPaste"
 		/>
-		<!--				v-model 实现编辑器内容的 双向绑定，valueHtml 是 Vue 组件的响应式变量，存储编辑器的 HTML 内容-->
+		<!--				v-model 与父组件自动双向绑定，实现编辑器内容的 双向绑定，valueHtml 是 Vue 组件的响应式变量，存储编辑器的 HTML 内容-->
 		<!--				@onFocus="handleFocus"-->
 		<!--				@onBlur="handleBlur"-->
 

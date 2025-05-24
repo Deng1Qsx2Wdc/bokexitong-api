@@ -43,41 +43,57 @@ router.post("/token/add", async (req, res) => {
 })
 //更新
 router.post("/token/update", async (req, res) => {
-    const  { boke_id,category_id , title , content  }  = req.body
-    const create_time = new Date().getTime()
-    const sqll = " update blog set  category_id =?, title =? ,content = ? ,create_time = ? where boke_id = ? "
-    const arr = [ category_id,title ,content,create_time,boke_id]
-    const {err,cow} = await  allblog(sqll,arr)
-    if(err==null){
-        res.send({
-            code:200,
-            msg:"更新新博客成功"
+    try {
+        const {boke_id, category_id, title, content} = req.body
+        const create_time = new Date().getTime()
+        const sqll = " update blog set  category_id =?, title =? ,content = ? ,create_time = ? where boke_id = ? "
+        const arr = [category_id, title, content, create_time, boke_id]
+        const {err, cow} = await allblog(sqll, arr)
+        if (err == null) {
+            res.status(200).send({
+                code: 200,
+                msg: "更新新博客成功"
+            })
+        } else {
+            res.status(500).send({
+                    code: 500,
+                    msg: "更新新博客失败"
+                }
+            )
+        }
+    }catch (err){
+        res.status(500).send({
+            code: 500,
+            msg: "发送失败"
         })
-    }else{
-        res.send({
-                code:500,
-                msg:"更新新博客失败"
-            }
-        )
     }
 })
 //删除
 router.post("/token/delete", async (req, res) => {
-    const {boke_id,title} = req.body
-    const sqll = "delete from blog where boke_id = ? and title = ?"
-    const arr = [boke_id,title]
-    const {err, cow} = await allblog(sqll, arr)
-    if (err == null) {
-        res.send({
-            code: 200,
-            msg: "删除新博客成功"
+    try {
+        const {boke_id, title} = req.body
+        console.log("boke_id", boke_id)
+        console.log("title", title)
+        const sqll = "delete from blog where boke_id = ? and title = ?"
+        const arr = [boke_id, title]
+        const {err, result} = await allblog(sqll, arr)
+        if (err == null) {
+            res.send({
+                code: 200,
+                msg: "删除新博客成功"
+            })
+        } else {
+            res.send({
+                    code: 500,
+                    msg: "删除新博客失败"
+                }
+            )
+        }
+    }catch (err){
+        res.status(500).send({
+            code: 500,
+            msg: "发送失败"
         })
-    } else {
-        res.send({
-                code: 500,
-                msg: "删除新博客失败"
-            }
-        )
     }
 })
 
@@ -88,13 +104,13 @@ router.get("/token/seek", async (req, res) => {
 
         keyword = keyword || ""
         categoryID = categoryID || ""
-        page = (page !== 0)?page:1
-        pageSize = (pageSize !== 0)?pageSize:3
+        page = page !== 0?page:1
+        pageSize = pageSize !== 0?pageSize:3
 
-        let spli = "select * from blog"
+        let spli = "select * from blog "
 
         if(keyword.length>0 || categoryID !=="" )
-                spli += " shere"
+                spli += " where"
         let arr = []
         let k = 0
         if (keyword.length>0) {
@@ -106,9 +122,9 @@ router.get("/token/seek", async (req, res) => {
         if (categoryID !=="") {
             if (k == 0) {
                 spli += " category_id = ? "
-                arr.push("%" + categoryID + "%")
+                arr.push(categoryID)
             } else {
-                spli += " or category_id like ? "
+                spli += " and category_id = ? "
                 arr.push(categoryID)
             }
         }
@@ -120,7 +136,7 @@ router.get("/token/seek", async (req, res) => {
         spli = spli +" order by create_time DESC limit ?,? "
         arr.push((page - 1) * pageSize)
         // console.log(page)
-        arr.push((Number(pageSize)))
+        arr.push(Number(pageSize))
 
         const {result,err} = await allblog(spli, arr)//分页查询
         // console.log(result)
@@ -141,6 +157,43 @@ router.get("/token/seek", async (req, res) => {
             })
         } else {
             res.send({
+                code: 500,
+                data: result,
+                msg: "查询失败"
+            })
+        }
+    }catch (err){
+        res.status(500).send({
+            code: 500,
+            msg: "发送失败"
+        })
+    }
+})
+//查找单个文章
+router.get("/token/seeks", async (req, res) => {
+    try {
+        let {boke_id, page, pageSize} = req.query
+        boke_id = boke_id || ""
+        page = parseInt(page) || 1
+        pageSize = parseInt(pageSize) || 3
+        // console.log(boke_id)
+        // console.log(page)
+        // console.log(pageSize)
+
+        let spli = "select * from blog where boke_id = ?  order by create_time DESC limit ?,? "
+        let arr = [boke_id,(page - 1) * (Number(pageSize)), (Number(pageSize))]
+
+        // console.log("执行了")
+        const {result,err} = await allblog(spli, arr)
+        // console.log(result)
+        if (err == null) {
+            res.status(200).send({
+                code: 200,
+                data: result,
+                msg: "查询成功"
+            })
+        } else {
+            res.status(500).send({
                 code: 500,
                 data: result,
                 msg: "查询失败"
