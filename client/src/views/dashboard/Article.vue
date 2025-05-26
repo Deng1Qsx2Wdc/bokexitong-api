@@ -118,12 +118,11 @@ const ArtUpdate = async (blog)=>{//为了获得单篇文章的信息，然后使
 		ReviseArticle.boke_id = blog.boke_id
 		ReviseArticle.category_id = blog.category_id
 		console.log(ReviseArticle)
-		let result = await axios.get("http://localhost:8080/blog/token/seeks", {
+		let result = await axios.get("http://localhost:8080/blog/seeke", {
 			params: {
 				boke_id: ReviseArticle.boke_id,
-			},
-			headers: {
-				token: adminStore.token
+				page:"",
+				pageSize:""
 			}
 		})
 		console.log(result)
@@ -181,9 +180,9 @@ const handleContentUpdate =(html)=>{
 	console.log(html)
 }
 const cate = async () => {
-	console.log("执行了")
+	// console.log("执行了")
 	// console.log(PageInfor.page)
-	let result = await axios.get("http://localhost:8080/blog/token/seek", {
+	let result = await axios.get("http://localhost:8080/blog/seek", {
 		params: PageInfor,
 		headers: {
 			token: adminStore.token
@@ -191,14 +190,14 @@ const cate = async () => {
 	})
 	PageInfor.blogtotal=result.data.data.sumber
 	PageInfor.pagetotal=Math.floor(PageInfor.blogtotal / PageInfor.pageSize) +(PageInfor.blogtotal % PageInfor.pageSize !==0 ?1:0)
-	console.log(result.data.data)
+	// console.log(result.data.data)
 	for (let rows of  result.data.data.result) {//将遍历到数据取别名为rows
 		const date = new Date(rows.create_time)
 		rows.create_time = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 		rows.content = rows.content.slice(0, 50)+"..."//截取字符串前 50 个字符
 	}
 	menus.value = result.data.data.result
-	console.log(result.data.data)
+	// console.log(result.data.data)
 	// console.log(menus.value)
 }
 
@@ -206,15 +205,13 @@ const cate = async () => {
 const mate = async () => {
 	// console.log("执行了")
 	try {
-		let result = await axios.get("http://localhost:8080/category/token/seekall", {
-			params: {
-				name: "1"
-			},
+		// console.log("111")
+		let result = await axios.get("http://localhost:8080/category/seeks", {
 			headers: {
 				token: adminStore.token
 			}
 		})
-		// console.log(result.data.data)
+		// console.log(result.data)
 		options.value = result.data.data.map(item=>({// 对每个数组元素执行箭头函数,返回新数组
 			label:item.name,
 			value:item.id
@@ -222,7 +219,7 @@ const mate = async () => {
 		// console.log(options.value)
 		// console.log(JSON.stringify(options.value))
 	}catch(err) {
-		console.error('加载失败', error)
+		console.error('加载失败', err)
 	}
 }
 

@@ -53,7 +53,7 @@ async function category() {
         const sqll = "select * from category "
         const [result] = await connection.query(sqll)
         connection.release()
-        // console.log(rows)
+        // console.log(result)
         return {result};
     }
     catch(err){

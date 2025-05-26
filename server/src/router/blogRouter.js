@@ -98,7 +98,7 @@ router.post("/token/delete", async (req, res) => {
 })
 
 //查找文章
-router.get("/token/seek", async (req, res) => {
+router.get("/seek", async (req, res) => {
     try {
         let {keyword, categoryID, page, pageSize} = req.query
 
@@ -170,7 +170,7 @@ router.get("/token/seek", async (req, res) => {
     }
 })
 //查找单个文章
-router.get("/token/seeks", async (req, res) => {
+router.get("/seeke", async (req, res) => {
     try {
         let {boke_id, page, pageSize} = req.query
         boke_id = boke_id || ""

@@ -80,9 +80,6 @@ app.use(async (req, res, next) => {
     // console.log("[Middleware] Received Token:", req.headers.token);
     if (req.path.includes(ADMIN_TOKEN_PATH)) {//includes //startsWith
         try {
-            // const token = req.headers.token
-            // const token = req.headers.authorization?.replace('Bearer ', '')
-            // app.js 中间件添加
             const token = req.headers.token || req.headers['Token'] || req.headers['token'];
             // 在中间件中添加日志
             // console.log('Received Headers:', req.headers);
@@ -111,10 +108,10 @@ app.use(async (req, res, next) => {
     }
 })
 
-const admin = require("./src/router/AdminRouter")//账户
+const admin = require("../server/src/router/AdminRouter")//账户
 app.use("/admin",admin)
 
-const category = require("./src/router/CategoryRouter")//博客类型
+const category = require("../server/src/router/CategoryRouter")//博客类型
 app.use("/category",category)
 
 const  blog = require("../server/src/router/blogRouter")//博客
